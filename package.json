@@ -1,0 +1,25 @@
+{
+  "name": "betterscript",
+  "version": "1.0.0",
+  "description": "A better JavaScript, inspired by C++",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leo60228/betterscript.git"
+  },
+  "keywords": [
+    "compiler"
+  ],
+  "author": "leo60228",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leo60228/betterscript/issues"
+  },
+  "homepage": "https://github.com/leo60228/betterscript#readme",
+  "dependencies": {
+    "acorn": "^4.0.11"
+  }
+}
