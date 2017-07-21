@@ -1,0 +1,13 @@
+String.a;
+
+ABC String = "str";
+
+Number num = 1;
+
+(function(String arg) {
+    String str = arg;
+})("xyz");
+
+function func() {
+
+}

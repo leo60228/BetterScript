@@ -1,61 +1,25 @@
-/*global parserstart*/
+Error.stackTraceLimit = Infinity;
 
 let acorn = require('acorn');
+let escodegen = require('escodegen');
+require('./src/parser')(acorn);
 
-let typeMaps = {};
-
-acorn.plugins.BetterScript = function (parser) {
-  let walker = require('acorn/dist/walk');
-  let tokens = [];
-
-  parser.extend("readToken", function (nextMethod) {
-    return function readToken(code, varDecl = false) {
-      if (acorn.isIdentifierStart(code, this.options.ecmaVersion >= 6) || code === 92 /* '\' */) {
-        let word = this.readWord1();
-        let type = acorn.tokTypes.name;
-        if (this.keywords.test(word)) {
-          if (this.containsEsc) {
-            this.raiseRecoverable(parserstart, "Escape sequence in keyword " + word);
-          }
-          type = acorn.keywordTypes[word];
-        }
-
-        if (tokens.length === 0) {
-          tokens.push(word);
-          return this.finishToken(type, 'let');
-        } else {
-          tokens.push(word);
-        };
-
-        if (tokens.length === 2) {
-          typeMaps[this.pos] = tokens[0];
-        }
-
-        return nextMethod.call(this, code);
-      }
-
-      tokens = [];
-
-      return nextMethod.call(this, code);
-    }
-  });
-  
-  parser.extend('parse', function(nextMethod) {
-    return function() {
-      let program = nextMethod.call(this);
-      //console.log(program);
-      walker.simple(program, {
-        Indentifier: function(node) {
-          if (typeMaps.hasOwnProperty(node.end)) {
-            node.type = typeMaps[node.end];
-          }
-        }
-      });
-      return program;
-    }
-  });
+let options = {
+  plugins: {
+    BetterScript: true
+  }
 };
+let code = require('fs').readFileSync('./parsertest.btrs');
+let ast = acorn.parse(code, options);
+let formattedAst = JSON.stringify(ast.body, null, 2)
+let JScode = escodegen.generate(ast);
 
-console.log(acorn.parse('String.a; Number num = 1; String str = "abc"; function func(){}', {plugins: {BetterScript: true}}).body[1].declarations)
+function decl(node) {
+  console.error(node.id.name, node.variableType);
+}
 
-console.log(typeMaps);
+require('acorn/dist/walk').simple(ast, {
+  VariableDeclarator: decl
+});
+
+console.log(JScode);
