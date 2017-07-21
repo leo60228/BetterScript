@@ -7,4 +7,4 @@ A compiler from Facet to JavaScript, with optional Flow type annotations used fo
 * Fix function arguments
 * Emit Flow type annotation comments
 * (Maybe) enclose Flow constructs in `/* ::`*`code`*`*/`
-* Write spec (may be moved to 0.2.0)
+* Write spec for Facet (may be moved to 0.2.0)
